@@ -14,8 +14,6 @@ An interactive American Sign Language learning platform that uses **computer vis
 [![OpenCV](https://img.shields.io/badge/OpenCV-5C3EE8?style=for-the-badge&logo=opencv&logoColor=white)](https://opencv.org/)
 [![Google AI](https://img.shields.io/badge/Google_Gemini-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://ai.google.dev/)
 
-[Getting Started](#-getting-started) • [Features](#-features) • [Tech Stack](#-tech-stack) • [How It Works](#-how-it-works) • [API](#-api-documentation)
-
 <hr>
 
 ## ✨ Features
