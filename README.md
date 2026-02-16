@@ -4,6 +4,8 @@
 
 An interactive American Sign Language learning platform that uses **computer vision** and **multimodal AI** to give you real-time feedback on your signing. Practice signs, earn XP, level up, and master ASL through gamified lessons.
 
+🎥 **[Watch Demo Video](https://www.youtube.com/watch?v=c20ZzmhjI_M)**
+
 [![React](https://img.shields.io/badge/React_18-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Python](https://img.shields.io/badge/Python_3.11-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
