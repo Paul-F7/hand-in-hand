@@ -130,7 +130,7 @@ pip install -r requirements.txt
 # Set up your Gemini API key
 echo 'GEMINI_API_KEY=your_key_here' > backend/.env
 
-# Start the FastAPI server
+# Start the FastAPI Server
 fastapi run dev
 ```
 
