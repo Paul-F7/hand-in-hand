@@ -1,6 +1,4 @@
-<div align="center">
-
-# <img src="frontend/public/logo.png" width="40" height="40" alt="HandInHand Logo"> HandInHand — AI-Powered ASL Learning
+# <img src="frontend/public/logo.png" width="28" height="28" alt="HandInHand Logo"> HandInHand — AI-Powered ASL Learning
 
 ### *Swipe. Sign. Learn.*
 
@@ -18,8 +16,6 @@ An interactive American Sign Language learning platform that uses **computer vis
 [Getting Started](#-getting-started) • [Features](#-features) • [Tech Stack](#-tech-stack) • [How It Works](#-how-it-works) • [API](#-api-documentation)
 
 <hr>
-
-</div>
 
 ## ✨ Features
 
@@ -333,10 +329,6 @@ This project is open source and available under the [MIT License](LICENSE).
 
 <hr>
 
-<div align="center">
-
 **Built with ❤️ for the ASL learning community**
 
 *Start your ASL journey today!* 🤟
-
-</div>
