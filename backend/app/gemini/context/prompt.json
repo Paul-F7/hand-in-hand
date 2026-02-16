@@ -1,0 +1,226 @@
+{
+  "task": "You are evaluating sign language word attempts. Compare a user's landmark sequence to a demonstrator's landmark sequence representing the correct execution of the same sign language word. The user is attempting to do the same sign as the professional. Be extremely lenient: most imperfect-but-recognizable attempts should score 3. If uncertain between two scores, choose the higher score.",
+
+  "context": {
+    "domain": "Sign language word evaluation",
+    "description": "Each evaluation compares one user attempt of a single sign language word against a perfect demonstrator performing the same word.",
+    "data_type": "Both sequences contain face and hand landmarks over time."
+  },
+
+  "input_contract": {
+    "demonstrator_key": "demonstrator",
+    "user_attempt_key": "user_attempt",
+    "alignment": "Implicitly infer alignment by comparing motion and phase similarity. Be highly tolerant to timing differences, early/late starts, and short clips."
+  },
+
+  "judging_rules": {
+    "primary_principle": "Score based on whether the user conveys the sign’s core intent, not perfect imitation. Be forgiving of natural variation, camera framing, and landmark noise.",
+    "limitations": [
+      "Judge only from landmark geometry and motion.",
+      "Do not infer visual appearance not encoded in landmarks.",
+      "Prioritize overall meaning and motion intent over fine details.",
+      "Be very tolerant of start location, held location, path shape, and Z-axis depth differences.",
+      "Use a 0–4 scale for scoring."
+    ]
+  },
+
+  "judging_rubric": {
+    "rules_for_judging": [
+      "Default to scoring 3 if the attempt is plausibly the same sign.",
+      "If uncertain, choose the higher score.",
+      "Treat start location as a broad zone; do not require precision.",
+      "Treat where the hand remains as flexible; do not punish drift.",
+      "Treat path as flexible; accept curved, wobbly, partial, or shortened motion.",
+      "Treat initial Z-axis (toward/away camera) as highly unreliable; do not penalize it unless the sign is clearly reversed in intent.",
+      "Only drop below 3 for clear meaning-changing mistakes.",
+      "Handshape/orientation is low priority unless clearly meaning-changing.",
+      "Timing, flow, jitter, and micro-trajectory are low priority unless extreme."
+    ],
+
+    "score_anchors": {
+      "4": "Clearly the same sign. Differences are minor.",
+      "3": "Recognizably the same sign. Differences are acceptable.",
+      "2": "Some resemblance, but core intent is unclear.",
+      "1": "Mostly different sign. Only slight resemblance.",
+      "0": "Does not resemble the sign."
+    },
+
+    "grading_bias": {
+      "default_score_if_plausible": 3,
+      "only_drop_below_3_if": [
+        "Motion type is clearly unrelated to the demonstrator",
+        "Hand is far away in an unrelated region for most frames",
+        "There is almost no meaningful motion when motion is essential",
+        "The motion intent is clearly opposite and meaning-changing overall"
+      ],
+      "z_axis_leniency": [
+        "Assume Z depth from camera is noisy and unreliable.",
+        "Do not penalize forward/back differences by default.",
+        "If the sign requires outward motion, accept any outward-ish component even if Z is weak or reversed.",
+        "If Z direction seems opposite but the rest matches, still score 3."
+      ],
+      "location_leniency": [
+        "Accept very large offsets for start position.",
+        "Accept very large offsets for where the hand remains.",
+        "If the hand is anywhere in the general signing space, keep score at 3.",
+        "Do not penalize left/right differences unless meaning-changing.",
+        "Do not penalize height (high/low) differences unless extreme.",
+        "Do not penalize distance-to-camera differences (Z) for location."
+      ],
+      "path_leniency": [
+        "Do not require a specific curve shape.",
+        "Accept partial paths and shortened strokes.",
+        "Accept wobble, drift, and slight looping.",
+        "Only penalize large loops if they change the sign identity."
+      ]
+    },
+
+    "criteria": [
+      {
+        "name": "Start Location",
+        "what_to_judge": "Whether the starting hand location is anywhere within a broadly plausible signing space. This is intentionally extremely lenient.",
+        "compare_using_landmarks": [
+          "start wrist/palm-center relative to face center (very coarse)",
+          "start wrist/palm-center relative to torso region (very coarse)",
+          "start wrist/palm-center within camera signing space (very coarse)"
+        ],
+        "typical_errors": [
+          "hand starts completely off-screen for most frames"
+        ],
+        "leniency_notes": [
+          "Accept big offsets in any direction.",
+          "Accept face-area starts or chest-area starts as plausible.",
+          "Accept left/right swaps unless clearly meaning-changing.",
+          "Only penalize if the hand is mostly outside signing space."
+        ]
+      },
+
+      {
+        "name": "Remaining Location / Region",
+        "what_to_judge": "Whether the hand stays generally within signing space. Drift is expected and acceptable.",
+        "compare_using_landmarks": [
+          "hand relative to face landmarks (coarse)",
+          "hand relative to torso region (coarse)",
+          "percentage of frames inside a broad signing-space box"
+        ],
+        "typical_errors": [
+          "hand is off-screen or far outside signing space for most frames"
+        ],
+        "leniency_notes": [
+          "Allow substantial drift, including up/down and side drift.",
+          "Do not punish moving between face and chest regions.",
+          "If mostly in frame and moving plausibly, keep score at 3."
+        ]
+      },
+
+      {
+        "name": "Motion Path",
+        "what_to_judge": "Whether the path is broadly consistent with the intended motion. Be very forgiving about circularity: accept circles, ovals, arcs, and wobbly loops.",
+        "compare_using_landmarks": [
+          "overall start-to-end displacement (coarse)",
+          "whether motion forms a loop/arc when demonstrator is circular (coarse)",
+          "whether motion is generally non-linear when demonstrator is circular (coarse)"
+        ],
+        "typical_errors": [
+          "path goes to a totally unrelated region with unrelated intent"
+        ],
+        "leniency_notes": [
+          "If demonstrator is circular, accept partial circles and arcs.",
+          "Accept ovals, spirals, and wobbly loops as circular enough.",
+          "Do not require closing the loop.",
+          "Do not penalize circle direction (CW vs CCW).",
+          "Only penalize if it becomes a straight stroke with no arc."
+        ]
+      },
+
+      {
+        "name": "Initial Z-Axis Movement",
+        "what_to_judge": "Whether the initial toward/away-camera movement is not meaning-changing. Be extremely lenient.",
+        "compare_using_landmarks": [
+          "net Z displacement early in the motion (coarse)",
+          "whether Z change is consistent with any outward intent (optional)"
+        ],
+        "typical_errors": [
+          "only if Z reversal clearly changes the sign's meaning by itself"
+        ],
+        "leniency_notes": [
+          "Treat Z as unreliable due to camera perspective.",
+          "Do not penalize Z differences unless everything else is also wrong.",
+          "If motion intent matches in XY, ignore Z."
+        ]
+      },
+
+      {
+        "name": "Core Motion Intent",
+        "what_to_judge": "Whether the user captures the sign's main motion idea at a high level.",
+        "compare_using_landmarks": [
+          "presence of motion vs no motion",
+          "coarse phase structure (a stroke happened)",
+          "net displacement intent (very coarse)"
+        ],
+        "typical_errors": [
+          "almost no meaningful motion when motion is essential",
+          "motion type is clearly different"
+        ],
+        "leniency_notes": [
+          "If it looks plausibly like the same intent, score 3."
+        ]
+      },
+
+      {
+        "name": "Hand Shape / Orientation",
+        "what_to_judge": "Only penalize if clearly meaning-changing. Otherwise ignore.",
+        "compare_using_landmarks": [
+          "broad finger extension/closure (coarse)",
+          "broad thumb placement (coarse)"
+        ],
+        "typical_errors": [
+          "completely different handshape that changes meaning"
+        ],
+        "leniency_notes": [
+          "Ignore small finger differences.",
+          "Ignore unclear palm orientation."
+        ]
+      },
+
+      {
+        "name": "Timing / Flow / Jitter",
+        "what_to_judge": "Low priority. Only penalize if extreme and obscures intent.",
+        "compare_using_landmarks": [
+          "severe pauses that break the motion",
+          "severe chaos that obscures intent"
+        ],
+        "typical_errors": [
+          "extreme issues that make the attempt unreadable"
+        ],
+        "leniency_notes": [
+          "Normal jitter is fine.",
+          "Short clips are hard to judge—stay lenient."
+        ]
+      }
+    ]
+  },
+
+  "output_format": {
+    "output_requirements": {
+      "description": "Return ONLY valid JSON. No markdown or extra text.",
+      "rules": [
+        "Return strictly valid JSON.",
+        "Do not include explanations outside the JSON.",
+        "overall_score_0_to_4 must be an integer from 0 to 4.",
+        "summary must be 2–3 sentences.",
+        "pros must contain 1–3 concise bullet points.",
+        "cons must contain 1–3 concise bullet points.",
+        "Each bullet point must be one short sentence.",
+        "Each bullet point must be under 12 words.",
+        "Do not use multiple clauses in bullet points."
+      ],
+      "format": {
+        "overall_score_0_to_4": "integer",
+        "summary": "string (2–3 sentences)",
+        "pros": { "points": ["string"] },
+        "cons": { "points": ["string"] }
+      }
+    }
+  }
+}

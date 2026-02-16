@@ -1,0 +1,180 @@
+{
+  "rules_for_judging": [
+    "Judge by comparing the user's landmark sequence to the demonstrator's landmark sequence. The demonstrator is the reference for correctness.",
+    "You may infer temporal alignment implicitly using similarity of hand and face landmark motion (e.g., align corresponding phases of motion).",
+    "Do not rely on visual appearance cues not present in landmarks (e.g., skin texture, exact occlusion, finger tension).",
+    "When a judgment depends on palm orientation or fine finger pose, base it only on what can be inferred from landmark geometry; avoid claiming certainty beyond the coordinates.",
+    "Evaluate each criterion independently based on landmark geometry and motion patterns.",
+    "Use a 0–4 scale: 0 = does not match demonstrator, 4 = matches demonstrator closely."
+  ],
+  "criteria": [
+    {
+      "name": "Movement",
+      "what_to_judge": "Whether the user reproduces the demonstrator’s overall motion structure (presence of motion, phases, and motion type).",
+      "compare_using_landmarks": [
+        "wrist/palm-center trajectory over time",
+        "velocity over time (moving vs holding)",
+        "phase structure (start → stroke → hold → return if present in demonstrator)"
+      ],
+      "typical_errors": [
+        "missing a key motion phase",
+        "extra movement not present in demonstrator",
+        "different motion type (e.g., wave vs straight move)"
+      ]
+    },
+    {
+      "name": "Exaggeration",
+      "what_to_judge": "Whether the motion amplitude is similar to the demonstrator (not significantly smaller or larger).",
+      "compare_using_landmarks": [
+        "total displacement of wrist/palm-center",
+        "trajectory bounding box size",
+        "peak-to-peak range in main motion axis"
+      ],
+      "typical_errors": [
+        "motion much smaller than demonstrator",
+        "motion much larger than demonstrator"
+      ]
+    },
+    {
+      "name": "Path",
+      "what_to_judge": "Whether the shape of the motion trajectory matches the demonstrator.",
+      "compare_using_landmarks": [
+        "trajectory curvature pattern",
+        "deviation from demonstrator trajectory shape",
+        "shape similarity across aligned phases"
+      ],
+      "typical_errors": [
+        "straight vs arc mismatch",
+        "loop appears when demonstrator has none",
+        "trajectory deviates or wanders"
+      ]
+    },
+    {
+      "name": "Direction",
+      "what_to_judge": "Whether the dominant direction(s) of motion match the demonstrator (including reversals).",
+      "compare_using_landmarks": [
+        "dominant motion vector direction per phase",
+        "direction changes and reversals pattern",
+        "sign of motion along major axes"
+      ],
+      "typical_errors": [
+        "reversed direction",
+        "extra reversals or missing reversals",
+        "direction drift during the stroke"
+      ]
+    },
+    {
+      "name": "Flow",
+      "what_to_judge": "Whether smoothness and continuity match the demonstrator (unless the demonstrator shows crisp stops).",
+      "compare_using_landmarks": [
+        "velocity continuity",
+        "acceleration changes (spikes vs smooth)",
+        "pause/hold pattern compared to demonstrator"
+      ],
+      "typical_errors": [
+        "jerky motion vs smooth demonstrator",
+        "unintended pauses not in demonstrator",
+        "missing crisp stop/hold that demonstrator has"
+      ]
+    },
+    {
+      "name": "Hand Shape / Orientation",
+      "what_to_judge": "Whether the user matches the demonstrator’s hand configuration and orientation pattern at key moments.",
+      "compare_using_landmarks": [
+        "finger extension/closure pattern (per finger)",
+        "finger spread pattern (between fingertips)",
+        "thumb placement relative to index and palm",
+        "orientation proxy from landmark geometry (e.g., palm plane / relative landmark configuration)"
+      ],
+      "typical_errors": [
+        "wrong fingers extended",
+        "handshape drifts during key pose",
+        "orientation pattern differs at key pose"
+      ]
+    },
+    {
+      "name": "Positioning of Hand and FInger",
+      "what_to_judge": "Whether internal hand geometry matches the demonstrator (relative placement and implied contact/near-contact patterns).",
+      "compare_using_landmarks": [
+        "relative distances (fingertip↔palm, fingertip↔fingertip)",
+        "relative alignment of fingers",
+        "joint angle patterns implied by landmark geometry"
+      ],
+      "typical_errors": [
+        "thumb placement differs",
+        "fingers misaligned",
+        "near-contact differs from demonstrator"
+      ]
+    },
+    {
+      "name": "Location of Hand compared to face",
+      "what_to_judge": "Whether the hand is in the same face-relative region as the demonstrator throughout the sign.",
+      "compare_using_landmarks": [
+        "hand position relative to face landmarks (translation-invariant)",
+        "distance to face center / key face points across time",
+        "side-of-face consistency (left/right/center relative to face)"
+      ],
+      "typical_errors": [
+        "hand too high/low/side vs demonstrator",
+        "hand too close/far vs demonstrator",
+        "switches region during the sign"
+      ]
+    },
+    {
+      "name": "Finger Position",
+      "what_to_judge": "Whether fine-grained finger bends, separations, and thumb details match the demonstrator.",
+      "compare_using_landmarks": [
+        "per-finger bend pattern from joint geometry",
+        "fingertip spacing pattern",
+        "thumb-index geometry"
+      ],
+      "typical_errors": [
+        "fingers not bent enough vs demonstrator",
+        "finger spread differs",
+        "thumb tucked/extended differently"
+      ]
+    },
+    {
+      "name": "Timing & Segmentation",
+      "what_to_judge": "Whether the user matches the demonstrator’s timing structure and phase durations (after implicit alignment).",
+      "compare_using_landmarks": [
+        "relative duration of phases (stroke/hold/return) compared to demonstrator",
+        "timing of peaks (max extension / max displacement) compared to demonstrator",
+        "hold presence and approximate placement compared to demonstrator"
+      ],
+      "typical_errors": [
+        "rushed stroke vs demonstrator",
+        "holds too long/short vs demonstrator",
+        "peaks occur in different phase"
+      ]
+    },
+    {
+      "name": "Stability / Jitter",
+      "what_to_judge": "Whether unintended micro-movements or shakiness exceed the demonstrator’s stability, especially during holds.",
+      "compare_using_landmarks": [
+        "high-frequency jitter in fingertip and wrist positions",
+        "stability during low-motion segments",
+        "frame-to-frame noise compared to demonstrator"
+      ],
+      "typical_errors": [
+        "shaky holds",
+        "noisy jitter throughout",
+        "unstable handshape when demonstrator is stable"
+      ]
+    },
+    {
+      "name": "Two-Hand Coordination",
+      "what_to_judge": "If demonstrator uses two hands, whether the user matches relative timing, spacing, and role behavior.",
+      "compare_using_landmarks": [
+        "inter-hand distance profile over time",
+        "synchrony between hands across phases",
+        "non-dominant hand stability when demonstrator is stable"
+      ],
+      "typical_errors": [
+        "hands out of sync",
+        "wrong relative spacing",
+        "non-dominant hand moves when demonstrator stays fixed"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+/* Font imports */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+:root {
+  --font-pixel: 'Press Start 2P', cursive;
+}
+
+/* Smooth scrolling for the learning path */
+.scroll-container {
+  scrollbar-width: thin;
+  scrollbar-color: #312e81 #0a0a1a;
+}
+
+.scroll-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.scroll-container::-webkit-scrollbar-track {
+  background: #0a0a1a;
+}
+
+.scroll-container::-webkit-scrollbar-thumb {
+  background: #4338ca;
+  border: 2px solid #0a0a1a;
+}

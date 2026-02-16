@@ -1,0 +1,25 @@
+# Web Framework
+flask==3.0.0
+flask-cors==4.0.0
+
+# Computer Vision & AI
+mediapipe==0.10.5
+opencv-python==4.8.1.78
+
+# Google Gemini API (new unified SDK with context caching support)
+google-genai>=0.3.0
+
+# Utilities
+Werkzeug==3.0.1
+Pillow>=10.2.0
+
+# Optional but recommended
+python-dotenv==1.0.0
+fastapi[standard]>=0.115.0
+uvicorn[standard]>=0.32.0
+pydantic>=2.10.0
+python-multipart>=0.0.9
+
+# Testing
+pytest==7.4.3
+pytest-mock==3.12.0
