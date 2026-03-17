@@ -407,7 +407,7 @@ export function LearningPath({ lessons, onLessonClick, onSkipToTest }: LearningP
           key={`unit-${header.unit}`}
           className="absolute pixelated flex flex-col items-center"
           style={{
-            left: `${header.x}px`,
+            left: `clamp(160px, ${header.x}px, calc(100% - 160px))`,
             top: `${header.y - 210}px`,
             transform: 'translate(-50%, 0)',
             zIndex: 15,
