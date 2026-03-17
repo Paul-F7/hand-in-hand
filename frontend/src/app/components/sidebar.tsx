@@ -17,6 +17,8 @@ interface SidebarProps {
   completedLessons: number;
   totalLessons: number;
   dictionary: { word: string; videoPath: string }[];
+  isOpen: boolean;
+  onClose: () => void;
 }
 
 function loadProfile(): { name: string; avatar: AvatarConfig } {
@@ -34,7 +36,7 @@ function loadProfile(): { name: string; avatar: AvatarConfig } {
   return { name: "Learner", avatar: DEFAULT_AVATAR };
 }
 
-export function Sidebar({ streak, level, totalXP, levelProgress, xpForNextLevel, dailyGoal, completedLessons, totalLessons, dictionary }: SidebarProps) {
+export function Sidebar({ streak, level, totalXP, levelProgress, xpForNextLevel, dailyGoal, completedLessons, totalLessons, dictionary, isOpen, onClose }: SidebarProps) {
   const [dailyGoalTarget, setLocalDailyGoalTarget] = useState(() => {
     try {
       const saved = localStorage.getItem("asl_dailyGoalTarget");
@@ -82,11 +84,15 @@ export function Sidebar({ streak, level, totalXP, levelProgress, xpForNextLevel,
 
   return (
     <>
-    <motion.div
-      className="fixed left-0 top-0 h-screen w-80 bg-slate-900 border-r border-slate-700 z-40 flex flex-col overflow-y-auto"
-      initial={{ x: -320 }}
-      animate={{ x: 0 }}
-      transition={{ type: "spring", stiffness: 100 }}
+    {/* Mobile backdrop */}
+    {isOpen && (
+      <div
+        className="fixed inset-0 bg-black/50 z-30 md:hidden"
+        onClick={onClose}
+      />
+    )}
+    <div
+      className={`fixed left-0 top-0 h-screen w-80 bg-slate-900 border-r border-slate-700 z-40 flex flex-col overflow-y-auto transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}
     >
       {/* Decorative vine along top */}
       <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-blue-500/40 to-transparent" />
@@ -95,6 +101,9 @@ export function Sidebar({ streak, level, totalXP, levelProgress, xpForNextLevel,
       <div className="px-6 pt-5 pb-4 border-b border-slate-800 flex items-center gap-3">
         <img src="/logo.png" alt="HandInHand" className="w-10 h-10 rounded-lg" />
         <h1 className="text-lg font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">HandInHand</h1>
+        <button onClick={onClose} className="ml-auto md:hidden text-slate-400 hover:text-slate-100 transition p-1">
+          <X className="w-6 h-6" />
+        </button>
       </div>
 
       {/* Profile */}
@@ -197,7 +206,7 @@ export function Sidebar({ streak, level, totalXP, levelProgress, xpForNextLevel,
 
       {/* Decorative bottom vine */}
       <div className="h-1 bg-gradient-to-r from-transparent via-purple-600/30 to-transparent" />
-    </motion.div>
+    </div>
 
     {/* Dictionary Overlay */}
     {isDictOpen && (

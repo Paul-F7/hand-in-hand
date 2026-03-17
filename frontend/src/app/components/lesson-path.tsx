@@ -22,7 +22,7 @@ import {
   generatePhasedUnitTestSlots,
   updateMastery,
 } from "../lib/lesson-algorithm";
-import { Zap } from "lucide-react";
+import { Zap, Menu } from "lucide-react";
 
 interface Lesson {
   id: number;
@@ -253,6 +253,7 @@ export function LessonPath() {
   const [showConfetti, setShowConfetti] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [currentLesson, setCurrentLesson] = useState<Lesson | null>(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // Persist state
   useEffect(() => {
@@ -941,9 +942,21 @@ export function LessonPath() {
         completedLessons={completedLessons.size}
         totalLessons={lessons.length}
         dictionary={Array.from(completedLessons).flatMap((index) => lessonWords[lessons[index]?.id] ?? [])}
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
       />
 
-      <div className="flex-1 ml-80 flex flex-col h-screen relative">
+      <div className="flex-1 md:ml-80 flex flex-col h-screen relative">
+        {/* Mobile top bar */}
+        <div className="md:hidden flex items-center gap-3 px-4 py-3 bg-slate-900 border-b border-slate-800 shrink-0 z-20">
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="text-slate-400 hover:text-slate-100 transition p-1"
+          >
+            <Menu className="w-6 h-6" />
+          </button>
+          <h1 className="text-base font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">HandInHand</h1>
+        </div>
         <Confetti show={showConfetti} onComplete={() => setShowConfetti(false)} />
 
         {currentLesson && (
